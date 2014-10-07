@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+<link rel='stylesheet' href='../css/longtable.css'>
+
+<script src='../js/jquery.min.js'></script>
+<script src='../js/longtable.js'></script>
+
+<script>
+$(function() {
+  var lt;
+  $.getJSON("./bans.json", function(t) {
+    lt = $("#longtable").longtable({
+      ip: {name: "IP address", width: "20%"},
+      reason: {name: "Reason", width: "50%"},
+      issued: {name: "Issued at", width: "10%"},
+      expires: {name: "Expires at", width: "10%"},
+      issuer: {name: "Issuer", width: "10%"}
+    }, {}, t);
+  });
+
+  $("#searcher").on("input", function() {
+    value = $(this).val();
+    regexp = new RegExp(value);
+
+    var fun = function(e) {
+      return (""+e.ip).match(regexp) || (""+e.reason).match(regexp) || (""+e.issued).match(regexp)
+          || (""+e.expires).match(regexp) || (""+e.issuer).match(regexp);
+    };
+
+    lt.set_filter(fun);
+  });
+});
+</script>
+</head>
+<body>
+
+<input type='text' id='searcher' style='font-size: 30px; width: 50%; float: right;'>
+
+<table id='longtable' style='clear: right'></table>
+
+</body>
+</html>
