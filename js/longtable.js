@@ -60,7 +60,7 @@ $.fn.longtable = function(fields, options, data) {
     },
     _insert: function(id) {
       var el = lt._gen_tr(id).appendTo(elem);
-      $(elem).trigger("new-row", data[id], el);
+      $(elem).trigger("new-row", [data[id], el]);
       shown_rows[id] = true;
     },
 
@@ -93,13 +93,15 @@ $.fn.longtable = function(fields, options, data) {
     },
 
     sort_by: function(field, reverse) {
-      sorted_by = field;
-      sorted_reverse = reverse;       
+      if (field !== undefined) {
+        sorted_by = field;
+        sorted_reverse = reverse;       
 
-      var ord = fields[field].sort_fun || function(a,b) { return lt.sort_alphanum(a[field], b[field]); };
+        var ord = fields[field].sort_fun || function(a,b) { return lt.sort_alphanum(a[field], b[field]); };
 
-      data = data.sort(ord);
-      if (reverse) data = data.reverse();
+        data = data.sort(ord);
+        if (reverse) data = data.reverse();
+      }
 
       lt.update_data();
     },
@@ -130,6 +132,10 @@ $.fn.longtable = function(fields, options, data) {
 
       lt._clean();
       lt.update_viewport();
+    },
+
+    get_data: function() {
+      return data;
     },
 
     destroy: function() {
